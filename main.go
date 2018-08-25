@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -39,6 +41,21 @@ func main() {
 	e.GET("/users", func(c echo.Context) error {
 		return c.String(http.StatusOK, "/users")
 	}, track)
+
+	// cookie test
+	e.GET("/cookie", func(c echo.Context) error {
+		cookies := c.Cookies()
+		for _, cookie := range cookies {
+			fmt.Println(cookie.Name)
+			fmt.Println(cookie.Value)
+		}
+		cookie := new(http.Cookie)
+		cookie.Name = fmt.Sprintf("%s%d", "cookie_", len(cookies))
+		cookie.Value = fmt.Sprintf("%s%d", "value_", len(cookies))
+		cookie.Expires = time.Now().Add(24 * time.Hour)
+		c.SetCookie(cookie)
+		return c.String(http.StatusOK, "open console to check cookies\n")
+	})
 
 	e.Logger.Fatal(e.Start(":1323"))
 }
