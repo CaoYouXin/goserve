@@ -58,4 +58,19 @@ func main() {
 	})
 
 	e.Logger.Fatal(e.Start(":1323"))
+
+	// e := echo.New()
+	// e.Pre(middleware.HTTPSRedirect())
+	// e.AutoTLSManager.HostPolicy = autocert.HostWhitelist("dev.veervr.tv")
+	// // Cache certificates
+	// e.AutoTLSManager.Cache = autocert.DirCache("~/.www/.cache")
+	// e.Use(middleware.Recover())
+	// e.Use(middleware.Logger())
+	// e.GET("/", func(c echo.Context) error {
+	// 	return c.HTML(http.StatusOK, `
+	// 		<h1>Welcome to Echo!</h1>
+	// 		<h3>TLS certificates automatically installed from Let's Encrypt :)</h3>
+	// 	`)
+	// })
+	// e.Logger.Fatal(e.StartAutoTLS(":443"))
 }
