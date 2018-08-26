@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"net/http"
 	"time"
 
@@ -11,6 +12,9 @@ import (
 
 func main() {
 	e := echo.New()
+
+	e.Static("/", "public")
+
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
@@ -55,6 +59,20 @@ func main() {
 		cookie.Expires = time.Now().Add(24 * time.Hour)
 		c.SetCookie(cookie)
 		return c.String(http.StatusOK, "open console to check cookies\n")
+	})
+
+	// JSONP
+	e.GET("/jsonp", func(c echo.Context) error {
+		callback := c.QueryParam("callback")
+		var content struct {
+			Response  string    `json:"response"`
+			Timestamp time.Time `json:"timestamp"`
+			Random    int       `json:"random"`
+		}
+		content.Response = "Sent via JSONP"
+		content.Timestamp = time.Now().UTC()
+		content.Random = rand.Intn(1000)
+		return c.JSONP(http.StatusOK, callback, &content)
 	})
 
 	e.Logger.Fatal(e.Start(":1323"))
