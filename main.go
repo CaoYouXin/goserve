@@ -1,7 +1,10 @@
 package main
 
 import (
+	"fmt"
+	"math/rand"
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -9,6 +12,9 @@ import (
 
 func main() {
 	e := echo.New()
+
+	e.Static("/", "public")
+
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
@@ -40,5 +46,49 @@ func main() {
 		return c.String(http.StatusOK, "/users")
 	}, track)
 
+	// cookie test
+	e.GET("/cookie", func(c echo.Context) error {
+		cookies := c.Cookies()
+		for _, cookie := range cookies {
+			fmt.Println(cookie.Name)
+			fmt.Println(cookie.Value)
+		}
+		cookie := new(http.Cookie)
+		cookie.Name = fmt.Sprintf("%s%d", "cookie_", len(cookies))
+		cookie.Value = fmt.Sprintf("%s%d", "value_", len(cookies))
+		cookie.Expires = time.Now().Add(24 * time.Hour)
+		c.SetCookie(cookie)
+		return c.String(http.StatusOK, "open console to check cookies\n")
+	})
+
+	// JSONP
+	e.GET("/jsonp", func(c echo.Context) error {
+		callback := c.QueryParam("callback")
+		var content struct {
+			Response  string    `json:"response"`
+			Timestamp time.Time `json:"timestamp"`
+			Random    int       `json:"random"`
+		}
+		content.Response = "Sent via JSONP"
+		content.Timestamp = time.Now().UTC()
+		content.Random = rand.Intn(1000)
+		return c.JSONP(http.StatusOK, callback, &content)
+	})
+
 	e.Logger.Fatal(e.Start(":1323"))
+
+	// e := echo.New()
+	// e.Pre(middleware.HTTPSRedirect())
+	// e.AutoTLSManager.HostPolicy = autocert.HostWhitelist("dev.veervr.tv")
+	// // Cache certificates
+	// e.AutoTLSManager.Cache = autocert.DirCache("~/.www/.cache")
+	// e.Use(middleware.Recover())
+	// e.Use(middleware.Logger())
+	// e.GET("/", func(c echo.Context) error {
+	// 	return c.HTML(http.StatusOK, `
+	// 		<h1>Welcome to Echo!</h1>
+	// 		<h3>TLS certificates automatically installed from Let's Encrypt :)</h3>
+	// 	`)
+	// })
+	// e.Logger.Fatal(e.StartAutoTLS(":443"))
 }
