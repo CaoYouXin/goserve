@@ -31,7 +31,7 @@ func main() {
 
 		square, err := orm.Select(number)
 		if err != nil {
-			return c.String(500, fmt.Sprintf("we can't find a square of %d", number))
+			return c.String(404, fmt.Sprintf("we can't find a square of %d", number))
 		}
 
 		return c.String(200, fmt.Sprintf("The square number of %d is: %d\n", number, square))
