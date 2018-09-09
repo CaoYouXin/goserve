@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	db, err := sql.Open("mysql", "root:123457@db/ft?charset=utf8&collation=utf8_bin")
+	db, err := sql.Open("mysql", "root:123457@tcp(db:3306)/ft?charset=utf8&collation=utf8_bin")
 	if err != nil {
 		panic(err.Error())
 	}
