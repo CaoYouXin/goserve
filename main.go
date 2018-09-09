@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 
@@ -13,7 +14,7 @@ import (
 func main() {
 	orm.Init()
 	defer orm.Close()
-	orm.Insert()
+	// orm.Insert()
 
 	e := echo.New()
 
@@ -22,12 +23,18 @@ func main() {
 
 	e.Static("/", "public")
 
-	e.GET("/s", func(c echo.Context) error {
-		a := fmt.Sprintf("The square number of 13 is: %d", orm.Select(13))
+	e.GET("/square/of/:number", func(c echo.Context) error {
+		number, err := strconv.Atoi(c.Param("number"))
+		if err != nil {
+			return c.String(400, "we need a number")
+		}
 
-		b := fmt.Sprintf("The square number of 1 is: %d", orm.Select(1))
+		square, err := orm.Select(number)
+		if err != nil {
+			return c.String(500, fmt.Sprintf("we can't find a square of %d", number))
+		}
 
-		return c.String(200, fmt.Sprintf("%s\n%s", a, b))
+		return c.String(200, fmt.Sprintf("The square number of %d is: %d\n", number, square))
 	})
 
 	e.Logger.Fatal(e.Start(":1323"))
