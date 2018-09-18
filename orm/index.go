@@ -2,11 +2,12 @@ package orm
 
 import (
 	"database/sql"
+	"fmt"
 )
 
 var pool *sql.DB
 
-// Init test
+// Init db
 func Init() {
 	var err error
 
@@ -21,7 +22,18 @@ func Init() {
 	}
 }
 
-// Close test
+// Close db
 func Close() {
 	pool.Close()
+	fmt.Println("\ndb pool... closed.")
+}
+
+// Exec sql
+func Exec(sql string, args ...interface{}) (sql.Result, error) {
+	return pool.Exec(sql, args...)
+}
+
+// Query sql
+func Query(sql string, args ...interface{}) (*sql.Rows, error) {
+	return pool.Query(sql, args...)
 }

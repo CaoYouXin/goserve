@@ -29,10 +29,18 @@
   go-tests = true
   unused-packages = true
 
-[[constraint]]
+[[override]]
   name = "github.com/labstack/echo"
   version = "3.1.0"
 
-[[constraint]]
+[[override]]
   name = "github.com/go-sql-driver/mysql"
   version = "1.4.0"
+
+[[override]]
+  name = "github.com/huandu/go-sqlbuilder"
+  version = "1.0.0"
+
+[[override]]
+  branch = "master"
+  name = "github.com/facebookgo/grace"
