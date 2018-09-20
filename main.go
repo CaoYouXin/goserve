@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"os/signal"
 	"time"
@@ -11,6 +12,7 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 
+	"github.com/CaoYouXin/goserve/migrate"
 	"github.com/CaoYouXin/goserve/orm"
 	"github.com/CaoYouXin/goserve/routes"
 )
@@ -18,6 +20,11 @@ import (
 func main() {
 	orm.Init()
 	defer orm.Close()
+
+	if err := migrate.Init(); err != nil {
+		fmt.Printf("%v", err.Error())
+		return
+	}
 
 	e := echo.New()
 
