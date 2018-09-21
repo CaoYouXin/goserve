@@ -20,11 +20,11 @@ func GetSquareNumber(number int) (*SNTable, error) {
 
 	sql, args := sb.Build()
 	rows, err := orm.Query(sql, args...)
-	defer rows.Close()
 
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	var sn SNTable
 	for rows.Next() {
