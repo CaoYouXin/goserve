@@ -1,6 +1,8 @@
 package bghis
 
 import (
+	"errors"
+
 	"github.com/CaoYouXin/goserve/orm"
 	sqlbuilder "github.com/huandu/go-sqlbuilder"
 )
@@ -27,8 +29,10 @@ func GetSquareNumber(number int) (*SNTable, error) {
 	defer rows.Close()
 
 	var sn SNTable
-	for rows.Next() {
+	if rows.Next() {
 		rows.Scan(snStruct.Addr(&sn)...)
+	} else {
+		return nil, errors.New("Not Found")
 	}
 
 	return &sn, nil
